@@ -1,27 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>YeetToken Presale</title>
-  <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js" type="application/javascript"></script>
-  <style>
-    body {
-      font-family: 'Press Start 2P', monospace;
-      background-color: #0f0f23;
-      color: #ffffff;
-      text-align: center;
-      padding: 2rem;
-    }
-    h1 {
-      color: #ff007f;
-      font-size: 2.5rem;
-      margin-bottom: 0.5rem;
-    }
-    .subtitle {
-      font-size: 1.2rem;
-      color: #a3ffe5;
-      margin-bottom: 2rem;
+<!-- truncated for brevity -->
+<div class="section">
+  <h2>📢 How to Participate</h2>
+  <p>Send ETH to the address below to buy $YEET at presale rate.</p>
+  <p>💰 <strong>Rate:</strong> 100,000 $YEET per 1 ETH</p>
+  <p>📉 <strong>Min/Max:</strong> 0.1 ETH - 2 ETH</p>
+  <div class="eth-address" id="wallet-address">0xdB39772ad0B303E2e004432E1D6f4383d19dF6C9</div>
+  <p style="color: #ffcc00; font-size: 0.9rem; margin-top: 1rem;">
+    🧠 Mobile Users: Please open this site inside the MetaMask app's built-in browser to connect your wallet.
+  </p>
+  <button onclick="connectWallet()">Connect Wallet</button>
+  <div id="wallet-confirmation"></div>
+  <br/>
+  <select id="ethAmount">
+    <option value="0.1">0.1 ETH</option>
+    <option value="0.25">0.25 ETH</option>
+    <option value="0.5">0.5 ETH</option>
+    <option value="1">1 ETH</option>
+    <option value="2">2 ETH</option>
+  </select>
+  <br/>
+  <button onclick="sendETH()">Buy $YEET</button>
+  <p id="status"></p>
+</div>
     }
     .countdown {
       font-size: 1rem;
@@ -89,7 +89,7 @@
   <div class="subtitle">For the culture. For the chaos. For the YEET.</div>
 
   <div class="countdown">
-    ⏳ Presale Ends: <strong>[5/1/2025]</strong>
+    ⏳ Presale Ends: <strong>5/1/2025</strong>
   </div>
 
   <div class="section">
