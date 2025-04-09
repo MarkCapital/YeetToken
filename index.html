@@ -4,7 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>YeetToken Presale</title>
-  <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js" type="application/javascript"></script>
+  <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js" type="application/javascript">
+    async function disconnectWallet() {
+      if (web3Modal && web3Modal.clearCachedProvider) {
+        await web3Modal.clearCachedProvider();
+        provider = null;
+        document.getElementById('wallet-confirmation').innerText = '';
+        document.getElementById('status').innerText = 'Wallet disconnected ❌';
+      }
+    }
+
+  <script src="https://unpkg.com/web3modal@1.9.8/dist/index.js"></script>
+  <script src="https://unpkg.com/@walletconnect/web3-provider@1.7.8/dist/umd/index.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
     body {
@@ -95,9 +106,10 @@
     <p>📉 <strong>Min/Max:</strong> 0.1 ETH - 2 ETH</p>
     <div class="eth-address" id="wallet-address">0xdB39772ad0B303E2e004432E1D6f4383d19dF6C9</div>
     <p style="color: #ffcc00; font-size: 0.9rem; margin-top: 1rem;">
-      🧠 Mobile Users: Please open this site inside the MetaMask app's built-in browser to connect your wallet.
+      🧠 Mobile Users: Please open this site inside the MetaMask app's built-in browser, or use WalletConnect.
     </p>
-    <button onclick="connectWallet()">Connect Wallet</button>
+    <br/>
+<button onclick="disconnectWallet()">Disconnect Wallet</button>
     <div id="wallet-confirmation"></div>
     <br/>
     <select id="ethAmount">
@@ -115,24 +127,40 @@
     ⚠️ DYOR. This is a meme coin, not financial advice. Only yeet what you can afford to lose. ❤️
   </footer>
   <script>
+    let web3Modal;
     let provider;
-    async function connectWallet() {
-      if (typeof window.ethereum !== 'undefined' && window.ethereum.isMetaMask) {
-        try {
-          provider = new ethers.providers.Web3Provider(window.ethereum);
-          await provider.send("eth_requestAccounts", []);
-          const signer = provider.getSigner();
-          const address = await signer.getAddress();
-          document.getElementById('wallet-confirmation').innerText = `Connected wallet: ${address}`;
-          document.getElementById('status').innerText = "Wallet connected ✔";
-        } catch (error) {
-          console.log(error);
-          document.getElementById('status').innerText = "Connection rejected.";
+
+    const providerOptions = {
+      walletconnect: {
+        package: window.WalletConnectProvider.default,
+        options: {
+          infuraId: "1f40f0c22fb9479cb1e27a78bc9cfd0a" // Replace with your own Infura ID if needed
         }
-      } else {
-        alert("MetaMask not detected. Please ensure it is installed and enabled in your browser.");
+      }
+    };
+
+    window.addEventListener('load', async () => {
+      web3Modal = new window.Web3Modal.default({
+        cacheProvider: false,
+        providerOptions,
+        theme: "dark"
+      });
+    });
+
+    async function connectWallet() {
+      try {
+        const instance = await web3Modal.connect();
+        provider = new ethers.providers.Web3Provider(instance);
+        const signer = provider.getSigner();
+        const address = await signer.getAddress();
+        document.getElementById('wallet-confirmation').innerText = `Connected wallet: ${address}`;
+        document.getElementById('status').innerText = "Wallet connected ✔";
+      } catch (error) {
+        console.error("Connection failed:", error);
+        alert("Connection failed. Please try again.");
       }
     }
+
     async function sendETH() {
       if (!provider) {
         alert("Please connect your wallet first.");
