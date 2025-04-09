@@ -27,12 +27,14 @@ $1
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: 'Press Start 2P', monospace;
-      background-color: #0f0f23;
-      color: #ffffff;
-      text-align: center;
-      padding: 2rem;
-    }
+  font-family: 'Arial', sans-serif;
+  background-color: #0f0f23;
+  color: #ffffff;
+  text-align: center;
+  padding: 1rem;
+  font-size: 16px;
+  line-height: 1.5;
+}
     h1 {
       color: #ff007f;
       font-size: 2.5rem;
@@ -86,7 +88,7 @@ $1
       font-size: 0.9rem;
       cursor: pointer;
       margin-top: 1rem;
-      font-family: 'Press Start 2P', monospace;
+      font-family: 'Arial', sans-serif;
     }
     input, select {
       padding: 0.5rem;
@@ -128,7 +130,8 @@ $1
     </select>
     <br/>
     <button onclick="sendETH()">Buy $YEET</button>
-    <p id="status"></p>
+    <div id="loading" style="display:none; margin-top: 1rem; font-size: 0.9rem; color: #ffcc00;">Processing transaction... ⏳</div>
+$1
   </div>
 
   <div class="section">
@@ -203,14 +206,17 @@ $1
       const amount = document.getElementById("ethAmount").value;
       const toAddress = document.getElementById("wallet-address").innerText.trim();
       try {
-        const tx = await signer.sendTransaction({
+        document.getElementById('loading').style.display = 'block';
+      const tx = await signer.sendTransaction({
           to: toAddress,
           value: ethers.utils.parseEther(amount)
         });
         document.getElementById('status').innerText = `Transaction sent: ${tx.hash}`;
+        document.getElementById('loading').style.display = 'none';
       } catch (error) {
         console.log(error);
         document.getElementById('status').innerText = "Transaction failed: " + error.message;
+        document.getElementById('loading').style.display = 'none';
       }
     }
   </script>
