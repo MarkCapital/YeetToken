@@ -4,42 +4,46 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>YeetToken Presale</title>
+  <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js" type="application/javascript"></script>
   <style>
     body {
-      font-family: 'Comic Sans MS', sans-serif;
-      background-color: #1a1a2e;
+      font-family: 'Press Start 2P', monospace;
+      background-color: #0f0f23;
       color: #ffffff;
       text-align: center;
       padding: 2rem;
     }
     h1 {
       color: #ff007f;
-      font-size: 3rem;
+      font-size: 2.5rem;
       margin-bottom: 0.5rem;
     }
     .subtitle {
-      font-size: 1.5rem;
+      font-size: 1.2rem;
       color: #a3ffe5;
       margin-bottom: 2rem;
     }
     .countdown {
-      font-size: 1.25rem;
+      font-size: 1rem;
       margin-bottom: 2rem;
     }
     .section {
-      background-color: #22223b;
+      background-color: #1e1e3f;
+      border: 2px dashed #ff00ff;
       border-radius: 15px;
       padding: 1.5rem;
       margin: 2rem auto;
       max-width: 600px;
+      box-shadow: 0 0 15px #00ffff;
     }
     .eth-address {
       font-weight: bold;
-      font-size: 1.2rem;
-      background-color: #333;
+      font-size: 1rem;
+      background-color: #2e2e5e;
       padding: 1rem;
       border-radius: 10px;
       word-wrap: break-word;
+      margin-top: 1rem;
     }
     a {
       color: #ff80ff;
@@ -50,10 +54,35 @@
     }
     footer {
       margin-top: 3rem;
-      font-size: 0.85rem;
+      font-size: 0.75rem;
       color: #888;
     }
+    button {
+      background-color: #00ffff;
+      color: black;
+      padding: 0.6rem 1.2rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      margin-top: 1rem;
+      font-family: 'Press Start 2P', monospace;
+    }
+    input, select {
+      padding: 0.5rem;
+      font-size: 1rem;
+      margin: 0.5rem auto;
+      border-radius: 8px;
+      border: none;
+      font-family: 'Press Start 2P', monospace;
+    }
+    #wallet-confirmation {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #00ffcc;
+    }
   </style>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
   <h1>🚀 YEETTOKEN PRESALE 🚀</h1>
@@ -68,8 +97,21 @@
     <p>Send ETH to the address below to buy $YEET at presale rate.</p>
     <p>💰 <strong>Rate:</strong> 100,000 $YEET per 1 ETH</p>
     <p>📉 <strong>Min/Max:</strong> 0.1 ETH - 2 ETH</p>
-    <div class="eth-address">0xdB39772ad0B303E2e004432E1D6f4383d19dF6C9</div>
-    <p>🔥 Soft Cap: 10 ETH | 🚀 Hard Cap: 100 ETH</p>
+    <div class="eth-address" id="wallet-address">0xdB39772ad0B303E2e004432E1D6f4383d19dF6C9</div>
+
+    <button onclick="connectWallet()">Connect Wallet</button>
+    <div id="wallet-confirmation"></div>
+    <br/>
+    <select id="ethAmount">
+      <option value="0.1">0.1 ETH</option>
+      <option value="0.25">0.25 ETH</option>
+      <option value="0.5">0.5 ETH</option>
+      <option value="1">1 ETH</option>
+      <option value="2">2 ETH</option>
+    </select>
+    <br/>
+    <button onclick="sendETH()">Buy $YEET</button>
+    <p id="status"></p>
   </div>
 
   <div class="section">
@@ -102,5 +144,47 @@
   <footer>
     ⚠️ DYOR. This is a meme coin, not financial advice. Only yeet what you can afford to lose. ❤️
   </footer>
+
+  <script>
+    let provider;
+
+    async function connectWallet() {
+      if (typeof window.ethereum !== 'undefined') {
+        try {
+          provider = new ethers.providers.Web3Provider(window.ethereum);
+          await provider.send("eth_requestAccounts", []);
+          const signer = provider.getSigner();
+          const address = await signer.getAddress();
+          document.getElementById('wallet-confirmation').innerText = `Connected wallet: ${address}`;
+          document.getElementById('status').innerText = "Wallet connected ✔";
+        } catch (error) {
+          document.getElementById('status').innerText = "Connection rejected.";
+        }
+      } else {
+        alert("MetaMask not found. Please install it.");
+      }
+    }
+
+    async function sendETH() {
+      if (!provider) {
+        alert("Please connect your wallet first.");
+        return;
+      }
+
+      const signer = provider.getSigner();
+      const amount = document.getElementById("ethAmount").value;
+      const toAddress = document.getElementById("wallet-address").innerText.trim();
+
+      try {
+        const tx = await signer.sendTransaction({
+          to: toAddress,
+          value: ethers.utils.parseEther(amount)
+        });
+        document.getElementById('status').innerText = `Transaction sent: ${tx.hash}`;
+      } catch (error) {
+        document.getElementById('status').innerText = "Transaction failed: " + error.message;
+      }
+    }
+  </script>
 </body>
 </html>
