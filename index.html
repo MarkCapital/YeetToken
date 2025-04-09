@@ -149,7 +149,7 @@
     let provider;
 
     async function connectWallet() {
-      if (typeof window.ethereum !== 'undefined') {
+      if (typeof window.ethereum !== 'undefined' && window.ethereum.isMetaMask) {
         try {
           provider = new ethers.providers.Web3Provider(window.ethereum);
           await provider.send("eth_requestAccounts", []);
@@ -158,10 +158,11 @@
           document.getElementById('wallet-confirmation').innerText = `Connected wallet: ${address}`;
           document.getElementById('status').innerText = "Wallet connected ✔";
         } catch (error) {
+          console.log(error);
           document.getElementById('status').innerText = "Connection rejected.";
         }
       } else {
-        alert("MetaMask not found. Please install it.");
+        alert("MetaMask not detected. Please ensure it is installed and enabled in your browser.");
       }
     }
 
@@ -182,6 +183,7 @@
         });
         document.getElementById('status').innerText = `Transaction sent: ${tx.hash}`;
       } catch (error) {
+        console.log(error);
         document.getElementById('status').innerText = "Transaction failed: " + error.message;
       }
     }
