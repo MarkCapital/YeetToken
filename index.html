@@ -5,16 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>YeetToken Presale</title>
   <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js" type="application/javascript">
-    async function disconnectWallet() {
-      if (web3Modal && web3Modal.clearCachedProvider) {
-        await web3Modal.clearCachedProvider();
-        provider = null;
-        document.getElementById('wallet-confirmation').innerText = '';
-        document.getElementById('status').innerText = 'Wallet disconnected ❌';
+    async function fetchYeetPrice() {
+      try {
+        const res = await fetch("https://api.dexscreener.com/latest/dex/pairs/ethereum/0xFcc4BeFEa07386d19Ac23Cdd6e3E70e97DE1d8Cc");
+        const data = await res.json();
+        if (data && data.pair && data.pair.priceUsd) {
+          const price = parseFloat(data.pair.priceUsd).toFixed(6);
+          document.getElementById("yeetPrice").innerText = `$${price} USD`;
+        } else {
+          document.getElementById("yeetPrice").innerText = "Price data unavailable.";
+        }
+      } catch (err) {
+        console.error("Error fetching YEET price:", err);
+        document.getElementById("yeetPrice").innerText = "Error loading price.";
       }
     }
-
-  <script src="https://unpkg.com/web3modal@1.9.8/dist/index.js"></script>
+    fetchYeetPrice();
+setInterval(fetchYeetPrice, 60000);
+$1
   <script src="https://unpkg.com/@walletconnect/web3-provider@1.7.8/dist/umd/index.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
@@ -109,8 +117,7 @@
       🧠 Mobile Users: Please open this site inside the MetaMask app's built-in browser, or use WalletConnect.
     </p>
     <br/>
-<button onclick="disconnectWallet()">Disconnect Wallet</button>
-    <div id="wallet-confirmation"></div>
+<div id="wallet-confirmation"></div>
     <br/>
     <select id="ethAmount">
       <option value="0.1">0.1 ETH</option>
@@ -123,7 +130,45 @@
     <button onclick="sendETH()">Buy $YEET</button>
     <p id="status"></p>
   </div>
-  <footer>
+
+  <div class="section">
+    <h2>🧠 Tokenomics</h2>
+    <ul style="text-align: left; max-width: 400px; margin: 0 auto;">
+      <li>Total Supply: 25,000,000 $YEET</li>
+      <li>Presale: 10,000,000</li>
+      <li>Liquidity Pool: 6,400,000</li>
+      <li>Team & Marketing: 3,000,000</li>
+      <li>Giveaways/Airdrops: 2,000,000</li>
+      <li>Reserve: 3,600,000</li>
+    </ul>
+  </div>
+
+  $1
+
+  <div class="section">
+    <h2>💸 Current $YEET Price</h2>
+    <p id="yeetPrice">Loading price...</p>
+  </div>
+
+  <div class="section">
+    <h2>🗺️ Roadmap</h2>
+    <ul style="text-align: left; max-width: 400px; margin: 0 auto;">
+      <li>✅ Meme hard</li>
+      <li>✅ Presale complete</li>
+      <li>🔜 Launch on Uniswap</li>
+      <li>🔜 Token airdrops + community chaos</li>
+      <li>🔜 TBD. Let the community yeet it forward.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>🌐 Connect With Us</h2>
+    <p>
+      <a href="https://twitter.com/YeetTokenOG" target="_blank">@YeetTokenOG on Twitter</a>
+    </p>
+  </div>
+
+  $1
     ⚠️ DYOR. This is a meme coin, not financial advice. Only yeet what you can afford to lose. ❤️
   </footer>
   <script>
