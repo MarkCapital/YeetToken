@@ -4,46 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>YeetToken Presale</title>
-  <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js" type="application/javascript">
-    async function fetchYeetPrice() {
-      try {
-        const res = await fetch("https://api.dexscreener.com/latest/dex/pairs/ethereum/0xFcc4BeFEa07386d19Ac23Cdd6e3E70e97DE1d8Cc");
-        const data = await res.json();
-        if (data && data.pair && data.pair.priceUsd) {
-          const price = parseFloat(data.pair.priceUsd).toFixed(6);
-          document.getElementById("yeetPrice").innerText = `$${price} USD`;
-        } else {
-          document.getElementById("yeetPrice").innerText = "Price data unavailable.";
-        }
-      } catch (err) {
-        console.error("Error fetching YEET price:", err);
-        document.getElementById("yeetPrice").innerText = "Error loading price.";
-      }
-    }
-    fetchYeetPrice();
-setInterval(fetchYeetPrice, 60000);
-$1
-  <script src="https://unpkg.com/@walletconnect/web3-provider@1.7.8/dist/umd/index.min.js">
-    function copyContractAddress() {
-      const contractText = document.getElementById("contract-address").innerText;
-      navigator.clipboard.writeText(contractText).then(() => {
-        alert("Contract address copied to clipboard!");
-      }, () => {
-        alert("Failed to copy address.");
-      });
-    }
-$1
+  <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
+  <script src="https://unpkg.com/web3modal@1.9.8/dist/index.js"></script>
+  <script src="https://unpkg.com/@walletconnect/web3-provider@1.7.8/dist/umd/index.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
     body {
-  font-family: 'Arial', sans-serif;
-  background-color: #0f0f23;
-  color: #ffffff;
-  text-align: center;
-  padding: 1rem;
-  font-size: 16px;
-  line-height: 1.5;
-}
+      font-family: 'Arial', sans-serif;
+      background-color: #0f0f23;
+      color: #ffffff;
+      text-align: center;
+      padding: 1rem;
+      font-size: 16px;
+      line-height: 1.5;
+    }
     h1 {
       color: #ff007f;
       font-size: 2.5rem;
@@ -105,55 +79,50 @@ $1
       margin: 0.5rem auto;
       border-radius: 8px;
       border: none;
-      font-family: 'Press Start 2P', monospace;
     }
     #wallet-confirmation {
       margin-top: 1rem;
       font-size: 0.9rem;
       color: #00ffcc;
     }
-  @media (max-width: 480px) {
-  h1 {
-    font-size: 2rem;
-  }
-  .section {
-    padding: 1rem;
-    margin: 1rem auto;
-  }
-  button, select, input {
-    font-size: 1rem;
-    width: 90%;
-  }
-  .eth-address {
-    font-size: 0.9rem;
-    padding: 0.75rem;
-  }
-  .subtitle, .countdown, #wallet-confirmation, #loading {
-    font-size: 0.95rem;
-  }
-}
-</style>
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 2rem;
+      }
+      .section {
+        padding: 1rem;
+        margin: 1rem auto;
+      }
+      button, select, input {
+        font-size: 1rem;
+        width: 90%;
+      }
+      .eth-address {
+        font-size: 0.9rem;
+        padding: 0.75rem;
+      }
+      .subtitle, .countdown, #wallet-confirmation, #loading {
+        font-size: 0.95rem;
+      }
+    }
+  </style>
 </head>
 <body>
   <h1>🚀 YEETTOKEN PRESALE 🚀</h1>
   <div class="subtitle">For the culture. For the chaos. For the YEET.</div>
   <div class="countdown">⏳ Presale Ends: <strong>[5/1/2025]</strong></div>
-  $1
-
-  $1
-
-  $1
 
   <div class="section">
-    <h2>🔎 On-Chain Info</h2>
-    <p><strong>Decimals:</strong> 18</p>
-    <p><strong>Owner Address:</strong> 0x4Ee6D80F3B305F4bF802b26f3BBDa448A23f9C71</p>
-  </div>
+    <h2>📢 How to Participate</h2>
+    <p>Send ETH to the address below to buy $YEET at presale rate.</p>
+    <p>💰 <strong>Rate:</strong> 100,000 $YEET per 1 ETH</p>
+    <p>📉 <strong>Min/Max:</strong> 0.1 ETH - 2 ETH</p>
+    <div class="eth-address" id="wallet-address">0xdB39772ad0B303E2e004432E1D6f4383d19dF6C9</div>
     <p style="color: #ffcc00; font-size: 0.9rem; margin-top: 1rem;">
       🧠 Mobile Users: Please open this site inside the MetaMask app's built-in browser, or use WalletConnect.
     </p>
     <button onclick="connectWallet()">Connect Wallet</button>
-<div id="wallet-confirmation"></div>
+    <div id="wallet-confirmation"></div>
     <br/>
     <select id="ethAmount">
       <option value="0.1">0.1 ETH</option>
@@ -165,10 +134,8 @@ $1
     <br/>
     <button onclick="sendETH()">Buy $YEET</button>
     <div id="loading" style="display:none; margin-top: 1rem; font-size: 0.9rem; color: #ffcc00;">Processing transaction... ⏳</div>
-$1
+    <p id="status"></p>
   </div>
-
-  $1
 
   <div class="section">
     <h2>📜 Token Contract</h2>
@@ -181,11 +148,17 @@ $1
     </p>
   </div>
 
-  $1
+  <div class="section">
+    <h2>📦 Token Details</h2>
+    <p><strong>Symbol:</strong> YEET</p>
+    <p><strong>Total Supply:</strong> 25,000,000 YEET</p>
+  </div>
 
-  
-
-  
+  <div class="section">
+    <h2>🔎 On-Chain Info</h2>
+    <p><strong>Decimals:</strong> 18</p>
+    <p><strong>Owner Address:</strong> 0x4Ee6D80F3B305F4bF802b26f3BBDa448A23f9C71</p>
+  </div>
 
   <div class="section">
     <h2>🌐 Connect With Us</h2>
@@ -194,9 +167,10 @@ $1
     </p>
   </div>
 
-  $1
+  <footer>
     ⚠️ DYOR. This is a meme coin, not financial advice. Only yeet what you can afford to lose. ❤️
   </footer>
+
   <script>
     let web3Modal;
     let provider;
@@ -205,7 +179,7 @@ $1
       walletconnect: {
         package: window.WalletConnectProvider.default,
         options: {
-          infuraId: "1f40f0c22fb9479cb1e27a78bc9cfd0a" // Replace with your own Infura ID if needed
+          infuraId: "1f40f0c22fb9479cb1e27a78bc9cfd0a"
         }
       }
     };
@@ -242,7 +216,7 @@ $1
       const toAddress = document.getElementById("wallet-address").innerText.trim();
       try {
         document.getElementById('loading').style.display = 'block';
-      const tx = await signer.sendTransaction({
+        const tx = await signer.sendTransaction({
           to: toAddress,
           value: ethers.utils.parseEther(amount)
         });
@@ -253,6 +227,15 @@ $1
         document.getElementById('status').innerText = "Transaction failed: " + error.message;
         document.getElementById('loading').style.display = 'none';
       }
+    }
+
+    function copyContractAddress() {
+      const contractText = document.getElementById("contract-address").innerText;
+      navigator.clipboard.writeText(contractText).then(() => {
+        alert("Contract address copied to clipboard!");
+      }, () => {
+        alert("Failed to copy address.");
+      });
     }
   </script>
 </body>
